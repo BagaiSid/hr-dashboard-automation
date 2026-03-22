@@ -1,15 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven'
-        jdk 'JDK17'
-    }
-
     environment {
         BROWSER     = 'chrome'
         HEADLESS    = 'true'
-        BASE_URL    = 'http://localhost:4000/hr-dashboard'
+        BASE_URL    = 'http://localhost:4000'
     }
 
     parameters {
