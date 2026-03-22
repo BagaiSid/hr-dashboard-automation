@@ -9,13 +9,13 @@ pipeline {
     environment {
         BROWSER     = 'chrome'
         HEADLESS    = 'true'
-        BASE_URL    = 'http://localhost:8080/hr-dashboard'
+        BASE_URL    = 'http://localhost:4000/hr-dashboard'
     }
 
     parameters {
         choice(name: 'BROWSER', choices: ['chrome', 'firefox'], description: 'Browser to run tests')
         choice(name: 'SUITE', choices: ['testng.xml'], description: 'TestNG suite file')
-        string(name: 'BASE_URL', defaultValue: 'http://localhost:8080/hr-dashboard', description: 'Application URL')
+        string(name: 'BASE_URL', defaultValue: 'http://localhost:4000', description: 'Application URL')
     }
 
     options {

@@ -1,70 +1,68 @@
 package com.hrdashboard.pages;
 
+import com.hrdashboard.driver.DriverManager;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
+import java.time.Duration;
 
 public class DashboardPage extends BasePage {
 
-    @FindBy(css = ".dashboard-header")
+    @FindBy(css = ".header h1")
     private WebElement dashboardHeader;
 
-    @FindBy(css = ".welcome-message")
-    private WebElement welcomeMessage;
+    @FindBy(id = "headCount")
+    private WebElement headCountStat;
 
-    @FindBy(css = ".total-employees .count")
-    private WebElement totalEmployeesCount;
+    @FindBy(id = "hiresTotal")
+    private WebElement hiresTotalStat;
 
-    @FindBy(css = ".active-employees .count")
-    private WebElement activeEmployeesCount;
+    @FindBy(id = "openTotal")
+    private WebElement openTotalStat;
 
-    @FindBy(css = ".departments .count")
-    private WebElement departmentsCount;
+    @FindBy(id = "termTotal")
+    private WebElement termTotalStat;
 
-    @FindBy(css = ".open-positions .count")
-    private WebElement openPositionsCount;
+    @FindBy(id = "applicantsTotal")
+    private WebElement applicantsTotalStat;
 
-    @FindBy(css = ".nav-employees")
+    @FindBy(css = ".nav-bar a[href='/employees.html']")
     private WebElement employeesNavLink;
 
-    @FindBy(css = ".nav-departments")
-    private WebElement departmentsNavLink;
-
-    @FindBy(css = ".nav-leave")
+    @FindBy(css = ".nav-bar a[href='/leave.html']")
     private WebElement leaveNavLink;
 
-    @FindBy(css = ".nav-recruitment")
-    private WebElement recruitmentNavLink;
-
-    @FindBy(css = ".logout-btn")
-    private WebElement logoutButton;
-
-    @FindBy(css = ".recent-activity-item")
-    private List<WebElement> recentActivityItems;
-
     public boolean isDashboardDisplayed() {
-        return isDisplayed(dashboardHeader);
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(10))
+                    .until(ExpectedConditions.urlContains("/index.html"));
+            return isDisplayed(dashboardHeader);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String getWelcomeMessage() {
-        return getText(welcomeMessage);
+        return getText(dashboardHeader);
     }
 
     public String getTotalEmployeesCount() {
-        return getText(totalEmployeesCount);
+        return getText(headCountStat);
     }
 
     public String getActiveEmployeesCount() {
-        return getText(activeEmployeesCount);
+        return getText(hiresTotalStat);
     }
 
     public String getDepartmentsCount() {
-        return getText(departmentsCount);
+        return getText(openTotalStat);
     }
 
     public String getOpenPositionsCount() {
-        return getText(openPositionsCount);
+        return getText(termTotalStat);
     }
 
     public EmployeePage navigateToEmployees() {
@@ -78,11 +76,21 @@ public class DashboardPage extends BasePage {
     }
 
     public LoginPage logout() {
-        click(logoutButton);
+        try {
+            WebElement logoutBtn = driver.findElement(
+                    By.cssSelector(".nav-user-info button[onclick='logout()']"));
+            logoutBtn.click();
+        } catch (Exception e) {
+            ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("logout()");
+        }
         return new LoginPage();
     }
 
     public int getRecentActivityCount() {
-        return recentActivityItems.size();
+        try {
+            return driver.findElements(By.cssSelector(".card")).size();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

@@ -11,17 +11,17 @@ public class LoginPage extends BasePage {
     @FindBy(id = "password")
     private WebElement passwordInput;
 
-    @FindBy(id = "loginBtn")
+    @FindBy(css = "button.btn-login")
     private WebElement loginButton;
 
-    @FindBy(css = ".error-message")
+    @FindBy(id = "errorMessage")
     private WebElement errorMessage;
 
-    @FindBy(linkText = "Forgot Password?")
-    private WebElement forgotPasswordLink;
-
-    @FindBy(css = ".login-title")
+    @FindBy(css = ".login-header h1")
     private WebElement loginTitle;
+
+    @FindBy(id = "loginForm")
+    private WebElement loginForm;
 
     public LoginPage enterUsername(String username) {
         type(usernameInput, username);
@@ -54,7 +54,16 @@ public class LoginPage extends BasePage {
     }
 
     public boolean isErrorMessageDisplayed() {
-        return isDisplayed(errorMessage);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        try {
+            return errorMessage.isDisplayed() && !errorMessage.getText().isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean isLoginPageDisplayed() {

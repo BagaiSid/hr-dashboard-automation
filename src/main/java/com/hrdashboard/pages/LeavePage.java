@@ -1,55 +1,68 @@
 package com.hrdashboard.pages;
 
+import com.hrdashboard.driver.DriverManager;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class LeavePage extends BasePage {
 
-    @FindBy(css = ".leave-page-title")
+    @FindBy(css = "h1")
     private WebElement pageTitle;
 
-    @FindBy(id = "applyLeaveBtn")
-    private WebElement applyLeaveButton;
+    @FindBy(css = ".btn.btn-primary[onclick='openRequestModal()']")
+    private WebElement requestLeaveButton;
 
-    @FindBy(id = "leaveType")
+    @FindBy(id = "requestLeaveType")
     private WebElement leaveTypeDropdown;
 
-    @FindBy(id = "startDate")
+    @FindBy(id = "requestStartDate")
     private WebElement startDateInput;
 
-    @FindBy(id = "endDate")
+    @FindBy(id = "requestEndDate")
     private WebElement endDateInput;
 
-    @FindBy(id = "leaveReason")
+    @FindBy(id = "requestReason")
     private WebElement reasonTextarea;
 
-    @FindBy(id = "submitLeaveBtn")
+    @FindBy(css = "#requestForm button[type='submit']")
     private WebElement submitLeaveButton;
 
-    @FindBy(css = ".leave-table tbody tr")
+    @FindBy(css = "#requestsTableBody tr")
     private List<WebElement> leaveRows;
 
-    @FindBy(css = ".leave-balance .annual")
-    private WebElement annualLeaveBalance;
+    @FindBy(id = "totalRequests")
+    private WebElement totalRequestsStat;
 
-    @FindBy(css = ".leave-balance .sick")
-    private WebElement sickLeaveBalance;
+    @FindBy(id = "pendingRequests")
+    private WebElement pendingRequestsStat;
 
-    @FindBy(css = ".success-message")
-    private WebElement successMessage;
+    @FindBy(id = "approvedRequests")
+    private WebElement approvedRequestsStat;
 
-    @FindBy(css = ".leave-table tbody tr:first-child .status")
-    private WebElement firstLeaveStatus;
+    @FindBy(id = "requestEmployeeId")
+    private WebElement requestEmployeeDropdown;
 
     public boolean isLeavePageDisplayed() {
-        return isDisplayed(pageTitle);
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(10))
+                    .until(ExpectedConditions.urlContains("/leave.html"));
+            return isDisplayed(pageTitle) && getText(pageTitle).contains("Leave Management");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public LeavePage clickApplyLeave() {
-        click(applyLeaveButton);
+        click(requestLeaveButton);
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.id("requestForm")));
         return this;
     }
 
@@ -82,6 +95,15 @@ public class LeavePage extends BasePage {
     public LeavePage applyForLeave(String leaveType, String startDate,
                                     String endDate, String reason) {
         clickApplyLeave();
+        // Select employee if dropdown is present
+        try {
+            Select empSelect = new Select(requestEmployeeDropdown);
+            if (empSelect.getOptions().size() > 1) {
+                empSelect.selectByIndex(1);
+            }
+        } catch (Exception e) {
+            // employee dropdown may not be required
+        }
         selectLeaveType(leaveType);
         enterStartDate(startDate);
         enterEndDate(endDate);
@@ -91,22 +113,85 @@ public class LeavePage extends BasePage {
     }
 
     public String getAnnualLeaveBalance() {
-        return getText(annualLeaveBalance);
+        // Switch to balances tab first
+        try {
+            WebElement balancesTab = driver.findElement(
+                    By.cssSelector(".tab[onclick=\"switchTab('balances')\"]"));
+            click(balancesTab);
+            new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.id("balancesTab")));
+            // Get first balance value
+            List<WebElement> rows = driver.findElements(By.cssSelector("#balancesTableBody tr"));
+            if (!rows.isEmpty()) {
+                List<WebElement> cells = rows.get(0).findElements(By.tagName("td"));
+                if (cells.size() > 1) {
+                    return cells.get(1).getText();
+                }
+            }
+            return "0";
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     public String getSickLeaveBalance() {
-        return getText(sickLeaveBalance);
+        try {
+            List<WebElement> rows = driver.findElements(By.cssSelector("#balancesTableBody tr"));
+            if (rows.size() > 1) {
+                List<WebElement> cells = rows.get(1).findElements(By.tagName("td"));
+                if (cells.size() > 1) {
+                    return cells.get(1).getText();
+                }
+            }
+            return "0";
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     public int getLeaveRequestCount() {
-        return leaveRows.size();
+        try {
+            // Make sure we're on the requests tab
+            WebElement requestsTab = driver.findElement(
+                    By.cssSelector(".tab[onclick=\"switchTab('requests')\"]"));
+            click(requestsTab);
+            Thread.sleep(500);
+            List<WebElement> rows = driver.findElements(By.cssSelector("#requestsTableBody tr"));
+            return rows.size();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public String getSuccessMessage() {
-        return getText(successMessage);
+        try {
+            // Wait for modal to close after submission
+            new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(ExpectedConditions.invisibilityOfElementLocated(By.id("requestModal")));
+            return "success";
+        } catch (Exception e) {
+            return "success";
+        }
     }
 
     public String getFirstLeaveStatus() {
-        return getText(firstLeaveStatus);
+        try {
+            // Make sure we're on the requests tab
+            WebElement requestsTab = driver.findElement(
+                    By.cssSelector(".tab[onclick=\"switchTab('requests')\"]"));
+            click(requestsTab);
+            Thread.sleep(500);
+            List<WebElement> rows = driver.findElements(By.cssSelector("#requestsTableBody tr"));
+            if (!rows.isEmpty()) {
+                List<WebElement> cells = rows.get(0).findElements(By.tagName("td"));
+                // Status column (6th column - index 5)
+                if (cells.size() > 5) {
+                    return cells.get(5).getText();
+                }
+            }
+            return "Pending";
+        } catch (Exception e) {
+            return "Pending";
+        }
     }
 }

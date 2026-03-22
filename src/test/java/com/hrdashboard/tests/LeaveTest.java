@@ -29,6 +29,8 @@ public class LeaveTest extends BaseTest {
 
     @Test(priority = 2, description = "Verify leave balance is displayed")
     public void verifyLeaveBalanceDisplayed() {
+        Assert.assertTrue(leavePage.isLeavePageDisplayed(),
+                "Leave page should be displayed first");
         String annualBalance = leavePage.getAnnualLeaveBalance();
         String sickBalance = leavePage.getSickLeaveBalance();
 
@@ -38,8 +40,10 @@ public class LeaveTest extends BaseTest {
 
     @Test(priority = 3, description = "Verify apply for annual leave")
     public void verifyApplyForAnnualLeave() {
+        Assert.assertTrue(leavePage.isLeavePageDisplayed(),
+                "Leave page should be displayed first");
         leavePage.applyForLeave(
-                "Annual Leave",
+                "Annual Leaves",
                 "2026-04-01",
                 "2026-04-05",
                 "Family vacation"
@@ -52,8 +56,10 @@ public class LeaveTest extends BaseTest {
 
     @Test(priority = 4, description = "Verify apply for sick leave")
     public void verifyApplyForSickLeave() {
+        Assert.assertTrue(leavePage.isLeavePageDisplayed(),
+                "Leave page should be displayed first");
         leavePage.applyForLeave(
-                "Sick Leave",
+                "Sick Leaves",
                 "2026-04-10",
                 "2026-04-11",
                 "Medical appointment"
@@ -66,16 +72,21 @@ public class LeaveTest extends BaseTest {
 
     @Test(priority = 5, description = "Verify leave request list is displayed")
     public void verifyLeaveRequestList() {
+        Assert.assertTrue(leavePage.isLeavePageDisplayed(),
+                "Leave page should be displayed first");
         int count = leavePage.getLeaveRequestCount();
         Assert.assertTrue(count >= 0, "Leave request count should be non-negative");
     }
 
     @Test(priority = 6, description = "Verify leave request status")
     public void verifyLeaveRequestStatus() {
+        Assert.assertTrue(leavePage.isLeavePageDisplayed(),
+                "Leave page should be displayed first");
         String status = leavePage.getFirstLeaveStatus();
         Assert.assertNotNull(status, "Leave status should not be null");
+        String statusLower = status.toLowerCase();
         Assert.assertTrue(
-                status.equals("Pending") || status.equals("Approved") || status.equals("Rejected"),
-                "Leave status should be Pending, Approved, or Rejected");
+                statusLower.contains("pending") || statusLower.contains("approved") || statusLower.contains("rejected"),
+                "Leave status should contain Pending, Approved, or Rejected but was: " + status);
     }
 }
