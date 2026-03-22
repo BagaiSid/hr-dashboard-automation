@@ -33,6 +33,13 @@ pipeline {
             }
         }
 
+        stage('Validate') {
+            steps {
+                echo 'Validating project setup...'
+                sh 'mvn validate -q'
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Compiling project...'

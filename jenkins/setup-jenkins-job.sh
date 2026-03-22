@@ -61,7 +61,7 @@ fi
 
 # ---- Step 4: Create/Update the job ----
 echo ""
-echo "[4/5] ${ACTION^}ing pipeline job '${JOB_NAME}'..."
+echo "[4/5] $(echo "${ACTION}" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')ing pipeline job '${JOB_NAME}'..."
 
 JOB_CONFIG_XML=$(cat <<'XMLEOF'
 <?xml version='1.1' encoding='UTF-8'?>
