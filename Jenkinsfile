@@ -2,6 +2,9 @@ pipeline {
     agent any
 
     environment {
+        JAVA_HOME   = '/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home'
+        MAVEN_HOME  = '/opt/homebrew/Cellar/maven/3.9.14/libexec'
+        PATH        = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:/opt/homebrew/bin:${env.PATH}"
         BROWSER     = 'chrome'
         HEADLESS    = 'true'
         BASE_URL    = 'http://localhost:4000'
