@@ -70,11 +70,19 @@ pipeline {
         always {
             echo 'Archiving test artifacts...'
 
-            // Archive screenshots on failure
+            // Archive screenshots
             archiveArtifacts artifacts: 'target/screenshots/**/*.png',
                              allowEmptyArchive: true
 
-            // Archive TestNG reports
+            // Archive Extent Reports
+            archiveArtifacts artifacts: 'target/extent-reports/**',
+                             allowEmptyArchive: true
+
+            // Archive video recordings
+            archiveArtifacts artifacts: 'target/recordings/**',
+                             allowEmptyArchive: true
+
+            // Archive TestNG/Surefire reports
             archiveArtifacts artifacts: 'target/surefire-reports/**',
                              allowEmptyArchive: true
         }

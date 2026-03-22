@@ -32,4 +32,9 @@ public class ScreenshotUtil {
 
         return destFile.getAbsolutePath();
     }
+
+    public static String takeScreenshotBase64() {
+        return ((TakesScreenshot) DriverManager.getDriver())
+                .getScreenshotAs(OutputType.BASE64);
+    }
 }
