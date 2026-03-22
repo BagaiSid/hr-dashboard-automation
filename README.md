@@ -47,12 +47,12 @@ Edit `src/main/resources/config.properties` to update:
 
 | Property            | Description                       | Default                              |
 |---------------------|-----------------------------------|--------------------------------------|
-| `base.url`          | HR Dashboard URL                  | `http://localhost:8080/hr-dashboard` |
+| `base.url`          | HR Dashboard URL                  | `http://localhost:8080`              |
 | `browser`           | Browser to use                    | `chrome`                             |
 | `implicit.wait`     | Implicit wait in seconds          | `10`                                 |
 | `explicit.wait`     | Explicit wait in seconds          | `15`                                 |
 | `admin.username`    | Admin login username              | `admin`                              |
-| `admin.password`    | Admin login password              | `admin123`                           |
+| `admin.password`    | Admin login password              | `password`                           |
 
 You can also override any property via system properties:
 ```bash
