@@ -1,0 +1,23 @@
+# Build output
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test output
+test-output/
+target/screenshots/
+target/surefire-reports/
+
+# Maven
+dependency-reduced-pom.xml

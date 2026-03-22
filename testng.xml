@@ -1,0 +1,28 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="HR Dashboard Test Suite" parallel="tests" thread-count="2">
+
+    <test name="Login Tests">
+        <classes>
+            <class name="com.hrdashboard.tests.LoginTest"/>
+        </classes>
+    </test>
+
+    <test name="Dashboard Tests">
+        <classes>
+            <class name="com.hrdashboard.tests.DashboardTest"/>
+        </classes>
+    </test>
+
+    <test name="Employee Tests">
+        <classes>
+            <class name="com.hrdashboard.tests.EmployeeTest"/>
+        </classes>
+    </test>
+
+    <test name="Leave Tests">
+        <classes>
+            <class name="com.hrdashboard.tests.LeaveTest"/>
+        </classes>
+    </test>
+
+</suite>
