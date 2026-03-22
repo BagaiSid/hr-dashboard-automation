@@ -58,11 +58,7 @@ pipeline {
             }
             post {
                 always {
-                    // Publish TestNG results
-                    testNG(reportFilenamePattern: '**/testng-results.xml',
-                           failOnError: false)
-
-                    // Archive surefire reports
+                    // Archive test results
                     junit allowEmptyResults: true,
                          testResults: '**/target/surefire-reports/*.xml'
                 }
